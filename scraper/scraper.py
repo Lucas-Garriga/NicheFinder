@@ -18,7 +18,7 @@ base_url = "https://www.amazon.fr/s?i=electronics&srs=4551203031&rh=n%3A45512030
 
 products = []
 page = 1
-max_pages = 196  # Nombre de pages à scraper (ajuster si nécessaire)
+max_pages = 3  # Nombre de pages à scraper (ajuster si nécessaire)
 
 while page <= max_pages:
     print(f"Scraping page {page}")
@@ -76,11 +76,6 @@ while page <= max_pages:
         image_elem = item.find("img")
         image_url = image_elem["src"] if image_elem else None
 
-        # Marque
-        brand = None
-        if title:
-            brand = title.split()[0]
-
         # URL produit
         url = None
         link_tag = item.select_one("a.a-link-normal.s-link-style.a-text-normal")
@@ -93,7 +88,6 @@ while page <= max_pages:
         products.append(
             {
                 "title": title,
-                "brand": brand,
                 "price": price,
                 "rating": rating,
                 "votes": votes,
@@ -101,8 +95,6 @@ while page <= max_pages:
                 "image_url": image_url,
                 "url": url,
                 "prime": prime,
-                "category": "Objets connectés",
-                "rank": rank,
                 "scraped_at": datetime.now(),
             }
         )
@@ -112,6 +104,6 @@ while page <= max_pages:
 driver.quit()
 
 # Sauvegarde
-dfv38 = pd.DataFrame(products)
-dfv38.to_csv("amazon_objets_connectes_v38.csv", index=False)
-print("✅ Données sauvegardées : amazon_objets_connectes_v38.csv")
+dfv39 = pd.DataFrame(products)
+dfv39.to_csv("amazon_objets_connectes_v38.csv", index=False)
+print("✅ Données sauvegardées : amazon_objets_connectes_v39.csv")
