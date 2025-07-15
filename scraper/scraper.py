@@ -18,7 +18,7 @@ base_url = "https://www.amazon.fr/s?i=electronics&srs=4551203031&rh=n%3A45512030
 
 products = []
 page = 1
-max_pages = 196  # Nombre de pages à scraper (ajuster si nécessaire)
+max_pages = 2000  # de pages à scraper (ajuster si nécessaire)
 
 while page <= max_pages:
     print(f"Scraping page {page}")
