@@ -16,7 +16,7 @@ from clean_data_2 import clean_amazon
 
 def main():
     print("📌 Démarrage du scraping synchronisé")
-    raw_file, n_products, max_pages = scrape_amazon(max_pages=1)
+    raw_file, n_products, max_pages = scrape_amazon(max_pages=5)
     print(f"📊 {n_products} produits extraits sur {max_pages} page(s)")
 
     print("\n📌 Démarrage du scraping asynchrone (détails produits)")
