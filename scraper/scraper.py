@@ -1,35 +1,34 @@
 from datetime import datetime
+from pathlib import Path
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import time
+import requests
 import re
-from pathlib import Path
+import time
+from tqdm import tqdm
 
 
-def scrape_amazon(max_pages=5) -> Path:
-    # 📁 Créer dossier de sauvegarde des données scrapées (avec date)
+def scrape_amazon(max_pages=3) -> tuple[Path, int, int]:
     root = Path(__file__).resolve().parent.parent
     data_dir = root / "data" / "scraped"
     data_dir.mkdir(parents=True, exist_ok=True)
 
-    # 🔧 Configuration de Selenium pour tourner sans ouvrir Chrome
+    print("🔎 Scraping des résultats Amazon...")
     options = Options()
-    options.add_argument("--headless")  # Pas de fenêtre visible
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     driver = webdriver.Chrome(options=options)
 
     base_url = "https://www.amazon.fr/s?i=electronics&srs=4551203031&rh=n%3A4551203031&s=popularity-rank&fs=true&page={}"
     products = []
-    page = 1
 
-    while page <= max_pages:
-        print(f"🔎 Scraping page {page}")
+    for page in range(1, max_pages + 1):
+        print(f"📄 Page {page}")
         driver.get(base_url.format(page))
         time.sleep(3)
-
         soup = BeautifulSoup(driver.page_source, "html.parser")
         items = soup.find_all("div", {"data-component-type": "s-search-result"})
 
@@ -37,7 +36,6 @@ def scrape_amazon(max_pages=5) -> Path:
             title_elem = item.h2
             title = title_elem.text.strip() if title_elem else None
 
-            # 🔢 Récupération des différents KPIs
             price = None
             price_whole = item.select_one("span.a-price > span.a-offscreen")
             if price_whole:
@@ -86,7 +84,6 @@ def scrape_amazon(max_pages=5) -> Path:
             products.append(
                 {
                     "title": title,
-                    "brand": title.split()[0] if title else None,
                     "price": price,
                     "rating": rating,
                     "votes": votes,
@@ -94,19 +91,17 @@ def scrape_amazon(max_pages=5) -> Path:
                     "image_url": image_url,
                     "url": url,
                     "prime": prime,
-                    "category": "Objets connectés",
-                    "rank": rank,
                     "scraped_at": datetime.now(),
                 }
             )
-        page += 1
 
     driver.quit()
+    df_basic = pd.DataFrame(products)
+    print(f"✅ {len(df_basic)} produits récupérés depuis les pages de résultats.")
 
-    # 📦 Sauvegarde avec horodatage
-    timestamp = datetime.now().strftime("%Y-%m-%d")
+    # Sauvegarde CSV horodaté
+    timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     save_path = data_dir / f"raw_data_{timestamp}.csv"
-    pd.DataFrame(products).to_csv(save_path, index=False)
-    print(f"✅ Données sauvegardées : {save_path}")
+    df_basic.to_csv(save_path, index=False)
 
-    return save_path, len(products), page - 1
+    return save_path, len(df_basic), max_pages
