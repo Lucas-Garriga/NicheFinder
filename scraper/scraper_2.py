@@ -10,7 +10,7 @@ import time
 from tqdm import tqdm
 
 
-def scrape_amazon(max_pages=3) -> tuple[Path, int, int]:
+def scrape_amazon(max_pages=200) -> tuple[Path, int, int]:
     root = Path(__file__).resolve().parent.parent
     data_dir = root / "data" / "scraped"
     data_dir.mkdir(parents=True, exist_ok=True)
