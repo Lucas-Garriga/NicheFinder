@@ -100,7 +100,7 @@ def scrape_amazon(max_pages=3) -> tuple[Path, int, int]:
     print(f"✅ {len(df_basic)} produits récupérés depuis les pages de résultats.")
 
     # Sauvegarde CSV horodaté
-    timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d")
     save_path = data_dir / f"raw_data_{timestamp}.csv"
     df_basic.to_csv(save_path, index=False)
 

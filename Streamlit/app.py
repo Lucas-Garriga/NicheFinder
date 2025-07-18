@@ -5,7 +5,7 @@ from datetime import datetime
 import plotly.express as px
 
 # === CONFIG ===
-DATA_PATH = os.path.join("data", "amazon_objets_connectes_v38.csv")
+DATA_PATH = os.path.join("data", "../data/cleaned/df_clean_2025-07-16.csv")
 
 
 @st.cache_data

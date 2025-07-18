@@ -9,9 +9,9 @@ root = Path(__file__).resolve().parent.parent
 sys.path.append(str(root / "scraper"))
 sys.path.append(str(root / "cleaner"))
 
-from scraper import scrape_amazon
+from scraper_2 import scrape_amazon
 from scraper_async import run_scrape_async
-from clean_data import clean_amazon
+from clean_data_2 import clean_amazon
 
 
 def main():
